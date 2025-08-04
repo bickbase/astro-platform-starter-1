@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="logo">ProductivityHub</div>
+            <div class="search-bar">
+                <input type="text" placeholder="Search notes and events..." id="universalSearch">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="quick-add" id="quickAddBtn">
+                <i class="fas fa-plus"></i>
+            </div>
+            <div class="profile">
+                <img src="https://via.placeholder.com/40" alt="Profile" id="profileImg">
+                <div class="profile-dropdown">
+                    <div class="profile-info">
+                        <img src="https://via.placeholder.com/60" alt="Profile" id="profileImgLarge">
+                        <h4 id="userName">User Name</h4>
+                        <p id="userEmail">user@example.com</p>
+                    </div>
+                    <ul>
+                        <li><i class="fas fa-user"></i> Profile</li>
+                        <li><i class="fas fa-cog"></i> Settings</li>
+                        <li><i class="fas fa-question-circle"></i> Help</li>
+                        <li><i class="fas fa-sign-out-alt"></i> Logout</li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Side Navigation -->
+            <nav class="side-nav">
+                <ul>
+                    <li class="active" data-panel="calendar"><i class="fas fa-calendar-alt"></i> Calendar</li>
+                    <li data-panel="notepad"><i class="fas fa-sticky-note"></i> Notepad</li>
+                    <li data-panel="alarms"><i class="fas fa-bell"></i> Alarms</li>
+                    <li data-panel="insights"><i class="fas fa-chart-pie"></i> Insights</li>
+                    <li data-panel="ai"><i class="fas fa-robot"></i> AI Assistant</li>
+                    <li data-panel="settings"><i class="fas fa-cog"></i> Settings</li>
+                </ul>
+            </nav>
+
+            <!-- Panel Content -->
+            <div class="panel-content">
+                <!-- Calendar Panel -->
+                <div class="panel calendar-panel active" id="calendarPanel">
+                    <div class="panel-header">
+                        <h2>Calendar</h2>
+                        <div class="view-options">
+                            <button class="active" data-view="month">Month</button>
+                            <button data-view="week">Week</button>
+                            <button data-view="day">Day</button>
+                        </div>
+                        <div class="calendar-nav">
+                            <button id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+                            <h3 id="currentMonthYear">August 2023</h3>
+                            <button id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+                            <select id="yearSelect"></select>
+                        </div>
+                        <div class="calendar-actions">
+                            <button id="addEventBtn"><i class="fas fa-plus"></i> Add Event</button>
+                            <div class="toggle-container">
+                                <span>Holidays</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="toggleHolidays" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-container">
+                                <span>Weather</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="toggleWeather" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="calendar-views">
+                        <!-- Month View -->
+                        <div class="month-view active">
+                            <div class="weekdays">
+                                <div>Sun</div>
+                                <div>Mon</div>
+                                <div>Tue</div>
+                                <div>Wed</div>
+                                <div>Thu</div>
+                                <div>Fri</div>
+                                <div>Sat</div>
+                            </div>
+                            <div class="days" id="monthDays"></div>
+                        </div>
+
+                        <!-- Week View -->
+                        <div class="week-view">
+                            <div class="week-header">
+                                <div class="week-nav">
+                                    <button id="prevWeek"><i class="fas fa-chevron-left"></i></button>
+                                    <h3 id="currentWeekRange">Week 32: Aug 7 - Aug 13</h3>
+                                    <button id="nextWeek"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                                <div class="week-days-header">
+                                    <div>Sunday</div>
+                                    <div>Monday</div>
+                                    <div>Tuesday</div>
+                                    <div>Wednesday</div>
+                                    <div>Thursday</div>
+                                    <div>Friday</div>
+                                    <div>Saturday</div>
+                                </div>
+                            </div>
+                            <div class="week-grid" id="weekGrid"></div>
+                        </div>
+
+                        <!-- Day View -->
+                        <div class="day-view">
+                            <div class="day-header">
+                                <button id="prevDay"><i class="fas fa-chevron-left"></i></button>
+                                <h3 id="currentDay">Monday, August 7, 2023</h3>
+                                <button id="nextDay"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            <div class="day-timeline" id="dayTimeline"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notepad Panel -->
+                <div class="panel notepad-panel" id="notepadPanel">
+                    <div class="panel-header">
+                        <h2>Notepad</h2>
+                        <div class="notepad-actions">
+                            <div class="date-filter">
+                                <select id="noteDateFilter">
+                                    <option value="7">Last 7 Days</option>
+                                    <option value="30">Last 30 Days</option>
+                                    <option value="custom">Custom Range</option>
+                                    <option value="all">All Notes</option>
+                                </select>
+                            </div>
+                            <button id="addNoteBtn"><i class="fas fa-plus"></i> Add Note</button>
+                            <div class="search-notes">
+                                <input type="text" placeholder="Search notes..." id="searchNotes">
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="notes-container">
+                        <div class="pinned-notes" id="pinnedNotes">
+                            <h3><i class="fas fa-thumbtack"></i> Pinned Notes</h3>
+                            <div class="notes-list" id="pinnedNotesList"></div>
+                        </div>
+                        <div class="all-notes" id="allNotes">
+                            <h3>All Notes</h3>
+                            <div class="notes-list" id="allNotesList"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alarms Panel -->
+                <div class="panel alarms-panel" id="alarmsPanel">
+                    <div class="panel-header">
+                        <h2>Alarms & Reminders</h2>
+                        <div class="alarm-actions">
+                            <button id="addAlarmBtn"><i class="fas fa-plus"></i> Add Alarm</button>
+                            <div class="search-alarms">
+                                <input type="text" placeholder="Search alarms..." id="searchAlarms">
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alarms-container">
+                        <div class="active-alarms">
+                            <h3>Active Alarms</h3>
+                            <div class="alarms-list" id="activeAlarmsList"></div>
+                        </div>
+                        <div class="snoozed-alarms">
+                            <h3>Snoozed Alarms</h3>
+                            <div class="alarms-list" id="snoozedAlarmsList"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insights Panel -->
+                <div class="panel insights-panel" id="insightsPanel">
+                    <div class="panel-header">
+                        <h2>Dashboard Insights</h2>
+                        <div class="insights-period">
+                            <select id="insightsPeriod">
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="year">This Year</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="insights-container">
+                        <div class="stats-cards">
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fas fa-sticky-note"></i></div>
+                                <div class="stat-info">
+                                    <h3 id="totalNotes">0</h3>
+                                    <p>Total Notes</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                                <div class="stat-info">
+                                    <h3 id="totalEvents">0</h3>
+                                    <p>Total Events</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fas fa-bell"></i></div>
+                                <div class="stat-info">
+                                    <h3 id="totalAlarms">0</h3>
+                                    <p>Total Alarms</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+                                <div class="stat-info">
+                                    <h3 id="completionRate">0%</h3>
+                                    <p>Completion Rate</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="charts-container">
+                            <div class="chart">
+                                <h3>Notes Created</h3>
+                                <canvas id="notesChart"></canvas>
+                            </div>
+                            <div class="chart">
+                                <h3>Events by Type</h3>
+                                <canvas id="eventsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="weekly-summary">
+                            <h3>Weekly Summary</h3>
+                            <div class="summary-content" id="weeklySummary"></div>
+                            <button id="generateSummaryBtn">Generate Summary</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Assistant Panel -->
+                <div class="panel ai-panel" id="aiPanel">
+                    <div class="panel-header">
+                        <h2>AI Assistant</h2>
+                        <div class="ai-actions">
+                            <button id="clearChatBtn"><i class="fas fa-trash"></i> Clear Chat</button>
+                        </div>
+                    </div>
+
+                    <div class="ai-container">
+                        <div class="ai-suggestions">
+                            <h3>Quick Suggestions</h3>
+                            <div class="suggestion-cards">
+                                <div class="suggestion-card" data-prompt="Remind me tomorrow at 5PM">
+                                    <i class="fas fa-bell"></i>
+                                    <p>Set a reminder</p>
+                                </div>
+                                <div class="suggestion-card" data-prompt="Show my busy days this week">
+                                    <i class="fas fa-calendar"></i>
+                                    <p>Busy days</p>
+                                </div>
+                                <div class="suggestion-card" data-prompt="Create a note for my meeting">
+                                    <i class="fas fa-sticky-note"></i>
+                                    <p>Meeting note</p>
+                                </div>
+                                <div class="suggestion-card" data-prompt="What's on my schedule today?">
+                                    <i class="fas fa-tasks"></i>
+                                    <p>Today's schedule</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ai-chat">
+                            <div class="chat-messages" id="aiChatMessages"></div>
+                            <div class="chat-input">
+                                <input type="text" placeholder="Ask me anything..." id="aiChatInput">
+                                <button id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Panel -->
+                <div class="panel settings-panel" id="settingsPanel">
+                    <div class="panel-header">
+                        <h2>Settings</h2>
+                    </div>
+
+                    <div class="settings-container">
+                        <div class="settings-section">
+                            <h3><i class="fas fa-paint-brush"></i> Appearance</h3>
+                            <div class="setting-item">
+                                <label>Theme Mode</label>
+                                <div class="theme-toggle">
+                                    <button class="active" data-theme="light">Light</button>
+                                    <button data-theme="dark">Dark</button>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <label>Primary Color</label>
+                                <div class="color-options">
+                                    <div class="color-option blue active" data-color="blue"></div>
+                                    <div class="color-option green" data-color="green"></div>
+                                    <div class="color-option purple" data-color="purple"></div>
+                                    <div class="color-option red" data-color="red"></div>
+                                    <div class="color-option orange" data-color="orange"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3><i class="fas fa-lock"></i> Security</h3>
+                            <div class="setting-item">
+                                <label>Lock Notes with Password</label>
+                                <div class="password-toggle">
+                                    <label class="switch">
+                                        <input type="checkbox" id="lockNotesToggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <div class="password-input" id="passwordInputContainer">
+                                        <input type="password" placeholder="Enter password" id="notesPassword">
+                                        <button id="savePasswordBtn">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3><i class="fas fa-language"></i> Language</h3>
+                            <div class="setting-item">
+                                <label>App Language</label>
+                                <select id="languageSelect">
+                                    <option value="en">English</option>
+                                    <option value="hi">हिंदी (Hindi)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3><i class="fas fa-database"></i> Data Management</h3>
+                            <div class="setting-item">
+                                <label>Export Data</label>
+                                <button id="exportDataBtn">Export as JSON</button>
+                            </div>
+                            <div class="setting-item">
+                                <label>Import Data</label>
+                                <input type="file" id="importDataInput" accept=".json">
+                                <button id="importDataBtn">Import</button>
+                            </div>
+                            <div class="setting-item">
+                                <label>Sync Data</label>
+                                <button id="syncDataBtn"><i class="fas fa-sync-alt"></i> Sync Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Event Modal -->
+    <div class="modal" id="eventModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="eventModalTitle">Add New Event</h2>
+            <form id="eventForm">
+                <div class="form-group">
+                    <label for="eventTitle">Title</label>
+                    <input type="text" id="eventTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventDescription">Description</label>
+                    <textarea id="eventDescription" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventStartDate">Start Date</label>
+                        <input type="date" id="eventStartDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventStartTime">Start Time</label>
+                        <input type="time" id="eventStartTime">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventEndDate">End Date</label>
+                        <input type="date" id="eventEndDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventEndTime">End Time</label>
+                        <input type="time" id="eventEndTime">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventRepeat">Repeat</label>
+                    <select id="eventRepeat">
+                        <option value="none">Does not repeat</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="eventColor">Color</label>
+                    <div class="color-options">
+                        <div class="color-option blue active" data-color="blue"></div>
+                        <div class="color-option green" data-color="green"></div>
+                        <div class="color-option purple" data-color="purple"></div>
+                        <div class="color-option red" data-color="red"></div>
+                        <div class="color-option orange" data-color="orange"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventTags">Tags</label>
+                    <input type="text" id="eventTags" placeholder="Add tags separated by commas">
+                </div>
+                <div class="form-group">
+                    <label for="eventParticipants">Invite Participants</label>
+                    <input type="text" id="eventParticipants" placeholder="Enter emails separated by commas">
+                    <button type="button" id="copyInviteLink">Copy Invite Link</button>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="eventReminder"> Set Reminder
+                    </label>
+                    <div id="reminderOptions" style="display: none;">
+                        <select id="reminderTime">
+                            <option value="5">5 minutes before</option>
+                            <option value="15">15 minutes before</option>
+                            <option value="30">30 minutes before</option>
+                            <option value="60">1 hour before</option>
+                            <option value="1440">1 day before</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="deleteEventBtn" class="delete-btn">Delete</button>
+                    <button type="submit" id="saveEventBtn">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Note Modal -->
+    <div class="modal" id="noteModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="noteModalTitle">Add New Note</h2>
+            <form id="noteForm">
+                <div class="form-group">
+                    <label for="noteTitle">Title</label>
+                    <input type="text" id="noteTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="noteDate">Date</label>
+                    <input type="date" id="noteDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="noteContent">Content</label>
+                    <div class="text-editor-toolbar">
+                        <button type="button" data-command="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                        <button type="button" data-command="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                        <button type="button" data-command="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                        <button type="button" data-command="insertUnorderedList" title="Bullet List"><i class="fas fa-list-ul"></i></button>
+                        <button type="button" data-command="insertOrderedList" title="Numbered List"><i class="fas fa-list-ol"></i></button>
+                    </div>
+                    <div class="text-editor" id="noteContent" contenteditable="true"></div>
+                </div>
+                <div class="form-group">
+                    <label for="noteTags">Tags</label>
+                    <input type="text" id="noteTags" placeholder="Add tags separated by commas">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="notePin"> Pin this note
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="noteLock"> Lock this note
+                    </label>
+                    <div id="notePasswordContainer" style="display: none;">
+                        <input type="password" id="notePassword" placeholder="Set password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="noteReminder"> Set Reminder
+                    </label>
+                    <div id="noteReminderOptions" style="display: none;">
+                        <input type="datetime-local" id="noteReminderTime">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Attachments</label>
+                    <div class="attachment-options">
+                        <button type="button" id="addImageBtn"><i class="fas fa-image"></i> Add Image</button>
+                        <button type="button" id="addVoiceBtn"><i class="fas fa-microphone"></i> Add Voice Note</button>
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                        <input type="file" id="voiceUpload" accept="audio/*" style="display: none;">
+                    </div>
+                    <div class="attachments-preview" id="attachmentsPreview"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="deleteNoteBtn" class="delete-btn">Delete</button>
+                    <button type="button" id="summarizeNoteBtn">Summarize</button>
+                    <button type="button" id="exportNoteBtn">Export</button>
+                    <button type="submit" id="saveNoteBtn">Save Note</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alarm Modal -->
+    <div class="modal" id="alarmModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="alarmModalTitle">Add New Alarm</h2>
+            <form id="alarmForm">
+                <div class="form-group">
+                    <label for="alarmTitle">Title</label>
+                    <input type="text" id="alarmTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="alarmTime">Time</label>
+                    <input type="time" id="alarmTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="alarmDate">Date</label>
+                    <input type="date" id="alarmDate">
+                </div>
+                <div class="form-group">
+                    <label>Repeat</label>
+                    <div class="repeat-options">
+                        <label><input type="checkbox" name="repeatDay" value="0"> Sun</label>
+                        <label><input type="checkbox" name="repeatDay" value="1"> Mon</label>
+                        <label><input type="checkbox" name="repeatDay" value="2"> Tue</label>
+                        <label><input type="checkbox" name="repeatDay" value="3"> Wed</label>
+                        <label><input type="checkbox" name="repeatDay" value="4"> Thu</label>
+                        <label><input type="checkbox" name="repeatDay" value="5"> Fri</label>
+                        <label><input type="checkbox" name="repeatDay" value="6"> Sat</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="alarmSound">Sound</label>
+                    <select id="alarmSound">
+                        <option value="default">Default</option>
+                        <option value="beep">Beep</option>
+                        <option value="chime">Chime</option>
+                        <option value="ringtone">Ringtone</option>
+                    </select>
+                    <button type="button" id="testSoundBtn">Test Sound</button>
+                </div>
+                <div class="form-group">
+                    <label for="alarmSnooze">Snooze Duration</label>
+                    <select id="alarmSnooze">
+                        <option value="5">5 minutes</option>
+                        <option value="10" selected>10 minutes</option>
+                        <option value="15">15 minutes</option>
+                        <option value="30">30 minutes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="alarmLocation">Location Reminder</label>
+                    <select id="alarmLocation">
+                        <option value="">None</option>
+                        <option value="home">Home</option>
+                        <option value="work">Work</option>
+                        <option value="gym">Gym</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="alarmNote">Note</label>
+                    <textarea id="alarmNote" rows="2"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="deleteAlarmBtn" class="delete-btn">Delete</button>
+                    <button type="submit" id="saveAlarmBtn">Save Alarm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Add Modal -->
+    <div class="modal quick-add-modal" id="quickAddModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Quick Add</h2>
+            <div class="quick-add-options">
+                <div class="quick-add-option" data-type="event">
+                    <i class="fas fa-calendar-plus"></i>
+                    <p>Event</p>
+                </div>
+                <div class="quick-add-option" data-type="note">
+                    <i class="fas fa-sticky-note"></i>
+                    <p>Note</p>
+                </div>
+                <div class="quick-add-option" data-type="alarm">
+                    <i class="fas fa-bell"></i>
+                    <p>Alarm</p>
+                </div>
+                <div class="quick-add-option" data-type="task">
+                    <i class="fas fa-tasks"></i>
+                    <p>Task</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alarm Ring Modal -->
+    <div class="modal alarm-ring-modal" id="alarmRingModal">
+        <div class="modal-content">
+            <h2 id="ringingAlarmTitle">Alarm</h2>
+            <p id="ringingAlarmTime">10:00 AM</p>
+            <p id="ringingAlarmNote">Time to wake up!</p>
+            <div class="alarm-actions">
+                <button id="snoozeAlarmBtn">Snooze (<span id="snoozeDuration">10</span> min)</button>
+                <button id="dismissAlarmBtn">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal export-modal" id="exportModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Export Data</h2>
+            <div class="export-options">
+                <div class="export-option active" data-type="json">
+                    <i class="fas fa-file-code"></i>
+                    <p>JSON</p>
+                </div>
+                <div class="export-option" data-type="pdf">
+                    <i class="fas fa-file-pdf"></i>
+                    <p>PDF</p>
+                </div>
+                <div class="export-option" data-type="txt">
+                    <i class="fas fa-file-alt"></i>
+                    <p>TXT</p>
+                </div>
+            </div>
+            <div class="export-content">
+                <textarea id="exportDataText" readonly></textarea>
+                <button id="copyExportBtn">Copy to Clipboard</button>
+                <button id="downloadExportBtn">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
